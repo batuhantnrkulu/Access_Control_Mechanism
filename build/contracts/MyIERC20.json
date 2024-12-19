@@ -1,0 +1,181 @@
+{
+  "contractName": "MyIERC20",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.21+commit.d9974bed\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/MyIERC20.sol\":\"MyIERC20\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/MyIERC20.sol\":{\"keccak256\":\"0xe82096b1f66a4755c1cc5afe024a3c784b4f698e8a8d1244fe5864573b71a966\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b6a8ed352ba2ff0a400c8b36e75df88ebaa1d4e031cd6800acf63c1bd9d493cd\",\"dweb:/ipfs/QmV3eCwbbdVraZ6qNcbXzB16X59HWi9L5hkD16wA1XjxSA\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ninterface MyIERC20 {\r\n    function balanceOf(address account) external view returns (uint256);\r\n}\r\n",
+  "sourcePath": "D:\\Desktop\\Dersler\\2024\\thesis\\Contracts\\contracts_v2 - test\\contracts\\MyIERC20.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/MyIERC20.sol",
+    "exportedSymbols": {
+      "MyIERC20": [
+        1811
+      ]
+    },
+    "id": 1812,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1803,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:9"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "MyIERC20",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 1811,
+        "linearizedBaseContracts": [
+          1811
+        ],
+        "name": "MyIERC20",
+        "nameLocation": "70:8:9",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "70a08231",
+            "id": 1810,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "balanceOf",
+            "nameLocation": "95:9:9",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1806,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1805,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "113:7:9",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1810,
+                  "src": "105:15:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1804,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "105:7:9",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "104:17:9"
+            },
+            "returnParameters": {
+              "id": 1809,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1808,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1810,
+                  "src": "145:7:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1807,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "145:7:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "144:9:9"
+            },
+            "scope": 1811,
+            "src": "86:68:9",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1812,
+        "src": "60:97:9",
+        "usedErrors": [],
+        "usedEvents": []
+      }
+    ],
+    "src": "33:126:9"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.21+commit.d9974bed.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2024-07-31T11:00:23.382Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
