@@ -20,11 +20,11 @@ Bash
 
 Running the Tests:
 
-    Start a Local Ganache Network:
-    Open a new terminal window and run the following command to start a local Ganache network with 25 accounts:
-    Bash
+Start a Local Ganache Network:
+Open a new terminal window and run the following command to start a local Ganache network with 25 accounts:
+Bash
 
-npx ganache -a 25
+    npx ganache -a 25
 
 Compile and Run Tests:
 In another terminal window, navigate to the project directory and run the following command to compile the contracts and execute the tests:
@@ -34,9 +34,9 @@ Bash
 
 Additional Notes:
 
-    Make sure you have the Truffle framework installed globally. You can install it using npm:
-    Bash
+Make sure you have the Truffle framework installed globally. You can install it using npm:
+Bash
 
-npm install -g truffle
+    npm install -g truffle
 
 If you encounter any issues, refer to the Truffle documentation for troubleshooting and advanced usage.
