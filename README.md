@@ -22,6 +22,8 @@ Running the Tests:
 
 Start a Local Ganache Network:
 Open a new terminal window and run the following command to start a local Ganache network with 25 accounts:
+
+![Example Image](readme1.png)
 Bash
 
     npx ganache -a 25
