@@ -6,7 +6,7 @@ import "./JudgeContract.sol";
 
 contract AccessControlContract {
     struct Policy {
-        RoleToken.Role role;
+        //RoleToken.Role role;
         string resource;
         string action;
         string permission;
@@ -15,14 +15,14 @@ contract AccessControlContract {
 
     event PolicyAdded(
         uint256 indexed policyId,
-        RoleToken.Role role,
+        //RoleToken.Role role,
         string resource,
         string action,
         string permission
     );
     event PolicyUpdated(
         uint256 indexed policyId,
-        RoleToken.Role role,
+        //RoleToken.Role role,
         string resource,
         string action,
         string permission
@@ -30,7 +30,7 @@ contract AccessControlContract {
     event PolicyDeleted(uint256 indexed policyId);
     event AccessControlChecked(
         address indexed subject,
-        RoleToken.Role role,
+        //RoleToken.Role role,
         string resource,
         string action,
         bool allowed
@@ -126,15 +126,16 @@ contract AccessControlContract {
     }
 
     function policyAdd(
-        RoleToken.Role role,
+        //RoleToken.Role role,
         string memory resource,
         string memory action,
         string memory permission
     ) external onlyWhenActive notBlocked onlyCreator("Unauthorized access attempt") {
-        policies.push(Policy(role, resource, action, permission, 0));
+        policies.push(Policy(//role, 
+        resource, action, permission, 0));
         emit PolicyAdded(
             policies.length - 1,
-            role,
+            //role,
             resource,
             action,
             permission
@@ -143,14 +144,16 @@ contract AccessControlContract {
 
     function policyUpdate(
         uint256 policyId,
-        RoleToken.Role role,
+        //RoleToken.Role role,
         string memory resource,
         string memory action,
         string memory permission
     ) external onlyWhenActive notBlocked onlyCreator("Unauthorized access attempt") {
         require(policyId < policies.length, "Policy does not exist");
-        policies[policyId] = Policy(role, resource, action, permission, 0);
-        emit PolicyUpdated(policyId, role, resource, action, permission);
+        policies[policyId] = Policy(//role, 
+        resource, action, permission, 0);
+        emit PolicyUpdated(policyId, //role, 
+        resource, action, permission);
     }
 
     function policyDelete(uint256 policyId) external onlyWhenActive notBlocked onlyCreator("Unauthorized access attempt") {
@@ -176,11 +179,11 @@ contract AccessControlContract {
     function accessControl(string memory resource, string memory action)
         external onlyWhenActive notBlocked onlyWhenSubjectMatches returns (bool)
     {
-        RoleToken.Role role = roleBasedContract.getRole(msg.sender);
+        //RoleToken.Role role = roleBasedContract.getRole(msg.sender);
         
         for (uint256 i = 0; i < policies.length; i++) {
             if (
-                policies[i].role == role &&
+                //policies[i].role == role &&
                 keccak256(bytes(policies[i].resource)) ==
                 keccak256(bytes(resource)) &&
                 keccak256(bytes(policies[i].action)) == keccak256(bytes(action))
@@ -196,7 +199,7 @@ contract AccessControlContract {
                 policies[i].timeOfLastRequest = block.timestamp;
                 emit AccessControlChecked(
                     subjectAddress,
-                    role,
+                    //role,
                     resource,
                     action,
                     keccak256(bytes(policies[i].permission)) ==

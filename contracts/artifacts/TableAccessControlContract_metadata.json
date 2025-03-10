@@ -916,11 +916,11 @@
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/AccessControlContract.sol": {
-			"keccak256": "0x335283fb941884a2048111355740c14ff68ffb46c8250b1d0d8abbe7519afd82",
+			"keccak256": "0x390a98a8daf56a60f3e10db6c13cb65112f3134ed90c9f9604d61cf6cd80d927",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3e77217a055e9549f2ec6197b946036455b4d8707eb048833da442c8ce08c62f",
-				"dweb:/ipfs/QmUssH4rYMH5gqbjFn9s5ACSoaQeXJJnULnc9qftShWujP"
+				"bzz-raw://8e1a7bb6e261a99dd289bfc5a780c68051c374c36762431c3beb308c195f904c",
+				"dweb:/ipfs/Qmepv9UpDJDTg5EKY1BjTcFZFrT1rAeNQEguXyxdzdQTPx"
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/JudgeContract.sol": {
@@ -948,11 +948,11 @@
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/RoleToken.sol": {
-			"keccak256": "0x65acc90380e1991f4a44a04f4a157e75d61edc3849bbb94efd8d2a6f1ec811bc",
+			"keccak256": "0xe8c89ca2f6a20ce98f8f38b1f374da3f45b024518474a16f3892f35ec270508a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b84f913ee9bac019c29534e8108deb46537a598a9f75e3940c453f8cc4c95843",
-				"dweb:/ipfs/QmWSdjWsL72RHUowNmhWgoNNU3sk3ePCd7nBp22PqiUULu"
+				"bzz-raw://7d133278b0e8f4160775dd6017dd2e6508669c7cfbc27b22a3752fd78f0ea4a2",
+				"dweb:/ipfs/QmdWbvUHcD7NGquqz4486KZHTV21RrHsJduVUcnhSv2ZHL"
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/TableAccessControlContract.sol": {

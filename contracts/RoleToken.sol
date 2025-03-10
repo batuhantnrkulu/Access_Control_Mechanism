@@ -332,11 +332,11 @@ contract RoleToken is ERC20, Ownable {
     }
 
     function penalizeMember(address _memberAddress, uint256 _amount) external onlyAdmin {
-        _burn(_memberAddress, _amount);
+        _burn(_memberAddress, _amount * 10 ** decimals());
     }
 
     function rewardMember(address _memberAddress, uint256 _amount) external onlyAdmin {
-        _mint(_memberAddress, _amount);
+        _mint(_memberAddress, _amount * 10 ** decimals());
     }
 
     // Function to get the address of the primary head for a regular member
