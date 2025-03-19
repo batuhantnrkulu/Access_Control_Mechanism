@@ -48,7 +48,7 @@ contract JudgeContract is Ownable {
     }
 
     modifier onlyAdmin() {
-        require(roleBasedAccessContract.getRole(msg.sender) == RoleToken.Role.ADMIN, "Access denied: Not an Admin");
+        require(roleBasedAccessContract.getRole(msg.sender) == RoleToken.Role.ADMIN, "Access denied: Not an Admin - JudgeContract");
         _;
     }
 
@@ -71,7 +71,7 @@ contract JudgeContract is Ownable {
     }
 
     function reportMaliciousActivity(address _memberAddress, string memory reason) external onlyAdmin
-        returns (uint256 penaltyAmount, string memory reasonString, uint256 blockingEndTime) {
+        returns (uint256 penaltyAmount, string memory reasonString, uint256 blockingEndTime, string memory newStatus) {
         require(bytes(reason).length > 0, "Reason cannot be empty");
 
         MisbehaviorRecord storage record = misbehaviorHistory[_memberAddress];
@@ -93,17 +93,16 @@ contract JudgeContract is Ownable {
         record.lastPenaltyTime = currentTime;
         
         // Update member's status based on the penalty level
-        updateMemberStatus(_memberAddress, penalty.level);
+        newStatus = updateMemberStatus(_memberAddress, penalty.level);
         
         uint256 tokenDeductionAmount = penalty.tokenDeduction[roleBasedAccessContract.getRole(_memberAddress)];
-
         penalizeMember(_memberAddress, tokenDeductionAmount, reason);
 
         if (penaltyDuration > 0) {
             blockMember(_memberAddress, penaltyDuration, reason);
         }
 
-        return (tokenDeductionAmount, reason, record.blockingEndTime);
+        return (tokenDeductionAmount, reason, record.blockingEndTime, newStatus);
     }
 
     function reportNonPenalizeMisbehavior(address _memberAddress) external onlyAdmin returns (uint256 rewardAmount, string memory newStatus) {
@@ -160,17 +159,21 @@ contract JudgeContract is Ownable {
         emit MemberBlocked(_memberAddress, record.blockingEndTime, reason);
     }
 
-    function updateMemberStatus(address _memberAddress, string memory penaltyLevel) internal {
+    function updateMemberStatus(address _memberAddress, string memory penaltyLevel) internal returns (string memory) {
+        string memory newStatus;
+
         if (keccak256(abi.encodePacked(penaltyLevel)) == keccak256(abi.encodePacked("major"))) {
-            roleBasedAccessContract.updateMemberStatus(_memberAddress, "MALICIOUS");
-            emit StatusUpdated(_memberAddress, "MALICIOUS");
+            newStatus = "MALICIOUS";
         } else if (keccak256(abi.encodePacked(penaltyLevel)) == keccak256(abi.encodePacked("minor"))) {
-            roleBasedAccessContract.updateMemberStatus(_memberAddress, "SUSPICIOUS");
-            emit StatusUpdated(_memberAddress, "SUSPICIOUS");
+            newStatus = "SUSPICIOUS";
         } else if (keccak256(abi.encodePacked(penaltyLevel)) == keccak256(abi.encodePacked("nothing"))) {
-            roleBasedAccessContract.updateMemberStatus(_memberAddress, "BENIGN");
-            emit StatusUpdated(_memberAddress, "BENIGN");
+            newStatus = "BENIGN";  // Default case
         }
+
+        roleBasedAccessContract.updateMemberStatus(_memberAddress, newStatus);
+        emit StatusUpdated(_memberAddress, newStatus);
+
+        return newStatus;
     }
 
     // Public function to retrieve the MisbehaviorRecord for a specific address

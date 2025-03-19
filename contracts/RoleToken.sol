@@ -48,8 +48,7 @@ contract RoleToken is ERC20, Ownable {
         _mint(to, amount);
     }
 
-    function assignAdminRole(address deployer, address contractAddress) public onlyAdmin {
-        require(roles[deployer] == Role.ADMIN, "Creator is not admin");
+    function assignAdminRole(address contractAddress) public onlyAdmin {
         roles[contractAddress] = Role.ADMIN;
         mint(contractAddress, 10000000 * 10 ** decimals());
     }

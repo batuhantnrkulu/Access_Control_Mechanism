@@ -41,12 +41,6 @@
       },
       {
         "indexed": false,
-        "internalType": "enum RoleToken.Role",
-        "name": "role",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
         "internalType": "string",
         "name": "resource",
         "type": "string"
@@ -156,6 +150,12 @@
         "internalType": "uint256",
         "name": "blockingEndTime",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newStatus",
+        "type": "string"
       }
     ],
     "name": "MaliciousActivityReported",
@@ -194,12 +194,6 @@
         "internalType": "uint256",
         "name": "policyId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "enum RoleToken.Role",
-        "name": "role",
-        "type": "uint8"
       },
       {
         "indexed": false,
@@ -266,12 +260,6 @@
       },
       {
         "indexed": false,
-        "internalType": "enum RoleToken.Role",
-        "name": "role",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
         "internalType": "string",
         "name": "resource",
         "type": "string"
@@ -316,8 +304,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -330,8 +317,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -344,8 +330,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -358,8 +343,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -372,8 +356,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -386,8 +369,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -399,11 +381,6 @@
     ],
     "name": "policies",
     "outputs": [
-      {
-        "internalType": "enum RoleToken.Role",
-        "name": "role",
-        "type": "uint8"
-      },
       {
         "internalType": "string",
         "name": "resource",
@@ -426,8 +403,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -440,8 +416,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -454,8 +429,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -468,8 +442,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -486,11 +459,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "enum RoleToken.Role",
-        "name": "role",
-        "type": "uint8"
-      },
       {
         "internalType": "string",
         "name": "resource",
@@ -518,11 +486,6 @@
         "internalType": "uint256",
         "name": "policyId",
         "type": "uint256"
-      },
-      {
-        "internalType": "enum RoleToken.Role",
-        "name": "role",
-        "type": "uint8"
       },
       {
         "internalType": "string",
@@ -574,8 +537,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [

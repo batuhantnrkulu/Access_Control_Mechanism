@@ -294,6 +294,11 @@
 						"internalType": "uint256",
 						"name": "blockingEndTime",
 						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "newStatus",
+						"type": "string"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -448,11 +453,11 @@
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/JudgeContract.sol": {
-			"keccak256": "0xbfc4b81c973b0056f153576a59b0b74ada3f8f1d8282f87a6d9d93f9a6ebc566",
+			"keccak256": "0x7f739fa7c55e0758fa12475b0504d7d6d0a614199835b8d822624f0c43032b58",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2c482cf05ede4a72d15943f38632f3e87147e55a7eca5f92b6096090c12bc72c",
-				"dweb:/ipfs/QmZ6FRYFMKnesujPSgYLpejrtp9tngaDiCdjQSkFHXWpro"
+				"bzz-raw://96c7531c1ad9241f23d9d6dc3082afb1317d38a83d4d38dab2826cc9e5c5b525",
+				"dweb:/ipfs/Qmd9p5i5FyyiyMHsRsMYj9esVdj6JQ3d66xAiD6AuXdAZJ"
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/RegisterContract.sol": {

@@ -270,11 +270,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "deployer",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
 						"name": "contractAddress",
 						"type": "address"
 					}
@@ -1110,7 +1105,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1165,11 +1160,11 @@
 			]
 		},
 		"Contracts/contracts_v2 - test/contracts/RoleToken.sol": {
-			"keccak256": "0xe8c89ca2f6a20ce98f8f38b1f374da3f45b024518474a16f3892f35ec270508a",
+			"keccak256": "0x5d376a3e6d9dc1cfa2cd455eec610b7879312d516d40a0ea50890f85b9b0455a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7d133278b0e8f4160775dd6017dd2e6508669c7cfbc27b22a3752fd78f0ea4a2",
-				"dweb:/ipfs/QmdWbvUHcD7NGquqz4486KZHTV21RrHsJduVUcnhSv2ZHL"
+				"bzz-raw://5f36072abffd5e71c82aa69e7fa6841a801299deefc09b48a553568314e50b0f",
+				"dweb:/ipfs/QmdWZgBjc9FRLE2fr6BUFeYirtkcB3UjiX7EzJUDHwWgnh"
 			]
 		}
 	},

@@ -52,7 +52,7 @@ contract TableAccessControlContract is Ownable {
     event PolicyAdded(uint256 policyId, RoleToken.Role role, string resource, string action, string permission);
     event PolicyUpdated(uint256 policyId, RoleToken.Role role, string resource, string action, string permission);
     event PolicyDeleted(uint256 policyId);
-    event MaliciousActivityReported(address indexed subject, uint256 penaltyAmount, string reason, uint256 blockingEndTime); // New event for malicious activity
+    event MaliciousActivityReported(address indexed subject, uint256 penaltyAmount, string reason, uint256 blockingEndTime, string newStatus); // New event for malicious activity
     event NonPenalizeMisbehaviorReported(address indexed subject, uint256 rewardAmount, string newStatus); // New event for benign behavior
     event GlobalResourceTableViewed(address indexed viewer, RoleToken.Member[] resourceTable);
     event LocalResourceTableViewed(address indexed viewer, RoleToken.Member[] resourceTable);
@@ -85,12 +85,12 @@ contract TableAccessControlContract is Ownable {
         // If the request is not approved, report malicious activity and return
         if (!isApproved) {
             if (keccak256(bytes(action)) == keccak256(bytes("delete")) || keccak256(bytes("edit")) == keccak256(bytes(action))) {
-                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
-                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime);
+                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
+                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus);
             } else if (keccak256(bytes(action)) == keccak256(bytes("view"))) {
                 // Report unauthorized access for view attempts
-                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
-                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime);
+                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
+                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus);
             }
         }
         else {
@@ -170,12 +170,12 @@ contract TableAccessControlContract is Ownable {
         if (!allowed) {
             // Penalize
             if (keccak256(bytes(action)) == keccak256(bytes("edit")) || keccak256(bytes(action)) == keccak256(bytes("delete"))) {
-                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
-                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for tampering with data
+                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
+                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for tampering with data
             }
             else if (keccak256(bytes(action)) == keccak256(bytes("view"))) {
-                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
-                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for unauthorized access
+                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
+                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for unauthorized access
             }
 
             return;
@@ -226,8 +226,8 @@ contract TableAccessControlContract is Ownable {
             requiredQuorum: requiredQuorum
         }));
 
-        (uint256 rewardAmount, string memory newStatus) = judgeContract.reportNonPenalizeMisbehavior(msg.sender);
-        emit NonPenalizeMisbehaviorReported(msg.sender, rewardAmount, newStatus); // Emit event for benign behavior
+        (uint256 rewardAmount, string memory statusNew) = judgeContract.reportNonPenalizeMisbehavior(msg.sender);
+        emit NonPenalizeMisbehaviorReported(msg.sender, rewardAmount, statusNew); // Emit event for benign behavior
         emit AccessRequestCreated(requestId, msg.sender, resource, address(this));
     }
 
@@ -291,8 +291,8 @@ contract TableAccessControlContract is Ownable {
         if (roleBasedAccessControl.getRole(account1) != RoleToken.Role.PRIMARY_GROUP_HEAD &&
             roleBasedAccessControl.getRole(account2) != RoleToken.Role.PRIMARY_GROUP_HEAD) {
             // Report malicious activity and emit event
-            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
-            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime);
+            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
+            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus);
             return;
         }
 
@@ -304,8 +304,8 @@ contract TableAccessControlContract is Ownable {
     function deleteGlobalResourceTable(address account) external notBlocked onlyAuthorizedRequesters("GlobalResourceTable", "delete") {
         // Revoke role to effectively remove the member from the global resource table
         if (roleBasedAccessControl.getRole(account) != RoleToken.Role.PRIMARY_GROUP_HEAD) {
-                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
-                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime);
+                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
+                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus);
                 return;
         }
 
@@ -328,8 +328,8 @@ contract TableAccessControlContract is Ownable {
         // Check if both accounts are Primary Group Heads (PGHs) for global resource table operations
         if ((roleBasedAccessControl.getRole(account1) != RoleToken.Role.SECONDARY_GROUP_HEAD && roleBasedAccessControl.getRole(account1) != RoleToken.Role.REGULAR_MEMBER) ||
             (roleBasedAccessControl.getRole(account2) != RoleToken.Role.SECONDARY_GROUP_HEAD && roleBasedAccessControl.getRole(account2) != RoleToken.Role.REGULAR_MEMBER)) {
-                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
-                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime);
+                (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
+                emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus);
                 return;
         }
 
@@ -340,8 +340,8 @@ contract TableAccessControlContract is Ownable {
     function deleteLocalResourceTable(address account) external notBlocked onlyAuthorizedRequesters("LocalResourceTable", "delete") {
         // Revoke role to effectively remove the member from the local resource table
         if (roleBasedAccessControl.getRole(account) != RoleToken.Role.SECONDARY_GROUP_HEAD || roleBasedAccessControl.getRole(account) != RoleToken.Role.REGULAR_MEMBER) {
-            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
-            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime);
+            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Privilege escalation");
+            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus);
             return;
         }
         

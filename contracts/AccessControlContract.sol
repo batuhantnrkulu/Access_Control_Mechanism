@@ -47,7 +47,7 @@ contract AccessControlContract {
     event RoleBasedContractSet(address roleBasedContract);
     event PolicyNotFoundForAccessControl(string resource, string action);
     event FunctionCalled(string functionName);
-    event MaliciousActivityReported(address indexed subject, uint256 penaltyAmount, string reason, uint256 blockingEndTime); // New event for malicious activity
+    event MaliciousActivityReported(address indexed subject, uint256 penaltyAmount, string reason, uint256 blockingEndTime, string newStatus); // New event for malicious activity
     event NonPenalizeMisbehaviorReported(address indexed subject, uint256 rewardAmount, string newStatus); // New event for benign behavior
 
 
@@ -89,8 +89,8 @@ contract AccessControlContract {
     // Modifier to restrict access based on creator address with specific penalty
     modifier onlyCreator(string memory penaltyType) {
         if (msg.sender != creator) {
-            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, penaltyType);
-            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for malicious activity
+            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, penaltyType);
+            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for malicious activity
             return;
         }
         _;
@@ -191,8 +191,8 @@ contract AccessControlContract {
                 if (
                     block.timestamp < policies[i].timeOfLastRequest + threshold
                 ) {
-                    (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Too frequent access");
-                    emit MaliciousActivityReported(subjectAddress, penaltyAmount, reason, blockingEndTime); // Emit event for too frequent access
+                    (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Too frequent access");
+                    emit MaliciousActivityReported(subjectAddress, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for too frequent access
                     return false;
                 }
 
@@ -213,11 +213,11 @@ contract AccessControlContract {
                     emit NonPenalizeMisbehaviorReported(msg.sender, rewardAmount, newStatus); // Emit event for benign behavior
                 } else {
                     if (keccak256(bytes(action)) == keccak256(bytes("edit")) || keccak256(bytes(action)) == keccak256(bytes("delete"))) {
-                        (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
-                        emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for tampering with data
+                        (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
+                        emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for tampering with data
                     } else if (keccak256(bytes(action)) == keccak256(bytes("view"))) {
-                        (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
-                        emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for unauthorized access
+                        (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
+                        emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for unauthorized access
                     }
                 }
 
@@ -226,11 +226,11 @@ contract AccessControlContract {
         }
 
         if (keccak256(bytes(action)) == keccak256(bytes("edit")) || keccak256(bytes(action)) == keccak256(bytes("delete"))) {
-            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
-            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for tampering with data
+            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Tampering with data");
+            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for tampering with data
         } else if (keccak256(bytes(action)) == keccak256(bytes("view"))) {
-            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
-            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime); // Emit event for unauthorized access
+            (uint256 penaltyAmount, string memory reason, uint256 blockingEndTime, string memory newStatus) = judgeContract.reportMaliciousActivity(msg.sender, "Unauthorized access attempt");
+            emit MaliciousActivityReported(msg.sender, penaltyAmount, reason, blockingEndTime, newStatus); // Emit event for unauthorized access
         }
 
         emit PolicyNotFoundForAccessControl(resource, action);

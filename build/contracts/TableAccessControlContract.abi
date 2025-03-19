@@ -250,6 +250,12 @@
         "internalType": "uint256",
         "name": "blockingEndTime",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newStatus",
+        "type": "string"
       }
     ],
     "name": "MaliciousActivityReported",

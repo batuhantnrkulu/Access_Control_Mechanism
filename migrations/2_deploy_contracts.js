@@ -21,25 +21,25 @@ module.exports = async function (deployer, network, accounts) {
 
   // Deploy contracts
   roleToken = await RoleToken.new(admin);
-  await roleToken.assignAdminRole(admin, roleToken.address);
+  await roleToken.assignAdminRole(roleToken.address);
 
   roleBasedAccessControl = await RoleBasedAccessControl.new(
     roleToken.address,
     admin
   );
-  await roleToken.assignAdminRole(admin, roleBasedAccessControl.address);
+  await roleToken.assignAdminRole(roleBasedAccessControl.address);
 
   registerContract = await RegisterContract.new(
     admin,
     roleBasedAccessControl.address
   );
-  await roleToken.assignAdminRole(admin, registerContract.address);
+  await roleToken.assignAdminRole(registerContract.address);
 
   judgeContract = await JudgeContract.new(
     admin,
     roleBasedAccessControl.address
   );
-  await roleToken.assignAdminRole(admin, judgeContract.address);
+  await roleToken.assignAdminRole(judgeContract.address);
 
   accessControlFactory = await AccessControlFactory.new(
     admin,
@@ -47,7 +47,7 @@ module.exports = async function (deployer, network, accounts) {
     registerContract.address,
     judgeContract.address
   );
-  await roleToken.assignAdminRole(admin, accessControlFactory.address);
+  await roleToken.assignAdminRole(accessControlFactory.address);
 
   tableAccessControlContract = await TableAccessControlContract.new(
     roleBasedAccessControl.address,
@@ -55,7 +55,7 @@ module.exports = async function (deployer, network, accounts) {
     registerContract.address,
     admin
   );
-  await roleToken.assignAdminRole(admin, tableAccessControlContract.address);
+  await roleToken.assignAdminRole(tableAccessControlContract.address);
 
   console.log(`RoleToken deployed at: ${roleToken.address}`);
   console.log(
