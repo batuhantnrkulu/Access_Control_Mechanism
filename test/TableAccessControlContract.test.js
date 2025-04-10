@@ -285,7 +285,7 @@ contract("TableAccessControlContract", (accounts) => {
 
     // Create access request
     const receipt = await measureFunctionExecutionTime(
-      tableAccessControlContract.createAccessRequest,
+      tableAccessControlContract.editGlobalResourceTable,
       resource,
       action,
       { from: regularMember1 }

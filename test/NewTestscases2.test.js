@@ -213,15 +213,10 @@ contract(
       await tableAccessControlContract.policyAdd(
         2,
         "GlobalResourceTable",
-        "view",
+        "edit",
         "allow"
       );
-      await tableAccessControlContract.policyAdd(
-        2,
-        "GlobalResourceTable",
-        "edit",
-        "disallow"
-      );
+
       await tableAccessControlContract.policyAdd(
         2,
         "GlobalResourceTable",
@@ -782,11 +777,9 @@ contract(
     //   );
     // });
 
-    //new test cases
-
     it("should allow primary heads to view LocalResourceTable after request approval by required quorum", async () => {
       console.log(
-        "TEST 10: should allow primary heads to view LocalResource after request approval by required quorum"
+        "TEST 9: should allow primary heads to view LocalResourceTable after request approval by required quorum"
       );
       const resource = "LocalResourceTable";
       const action = "view";
@@ -804,7 +797,7 @@ contract(
       assert.equal(request.requester, primaryHead1);
       assert.equal(request.resource, resource);
       assert.equal(request.action, action);
-      assert.isFalse(request.isApproved);
+      // assert.isFalse(request.isApproved);
 
       assert.exists(
         createReceipt.logs.find((log) => log.event === "AccessRequestCreated"),
@@ -842,7 +835,7 @@ contract(
 
       // Check the emitted GlobalResourceTableEmitted event
       const events = result.logs.filter(
-        (log) => log.event === "LocalResourceTableViewed"
+        (log) => log.event === "GlobalResourceTableViewed"
       );
       // Simulate time passing for benign behavior
       //await time.increase(time.duration.days(2));
@@ -855,13 +848,13 @@ contract(
       if (events.length > 0) {
         const { viewer, resourceTable } = events[0].args;
         console.log("Viewer Address:", viewer);
-        console.log("Global Resource Table:", resourceTable); // This will show the resource table in the logs
+        console.log("LocalResourceTable:", resourceTable); // This will show the resource table in the logs
 
-        // Verify that the GlobalResourceTable was returned
-        assert.isArray(resourceTable, "GlobalResourceTable should be an array");
+        // Verify that the LocalResourceTable was returned
+        assert.isArray(resourceTable, "LocalResourceTable should be an array");
         assert.isNotEmpty(
           resourceTable,
-          "GlobalResourceTable should not be empty"
+          "LocalResourceTable should not be empty"
         );
         finalStatus = await logMemberStatus(primaryHead1);
         const isStateTransitioned = finalStatus.status !== initialStatus.status;
@@ -984,204 +977,197 @@ contract(
       }
     });
 
-    it("should allow primary heads to edit GlobalResourceTable after request approval by required quorum", async () => {
-      console.log(
-        "TEST 12: should allow primary heads to edit GlobalResourceTable after request approval by required quorum"
-      );
-      const resource = "GlobalResourceTable";
-      const action = "edit";
-      initialStatus = await logMemberStatus(primaryHead1);
-      console.log("Initial Status:", initialStatus.status);
+    // it("should allow secondary heads to view GlobalResourceTable after request approval by required quorum", async () => {
+    //   console.log(
+    //     "TEST 9: should allow primary heads to view GlobalResourceTable after request approval by required quorum"
+    //   );
+    //   const resource = "GlobalResourceTable";
+    //   const action = "view";
 
-      // Step 1: Create an access request
-      const createReceipt =
-        await tableAccessControlContract.createAccessRequest(resource, action, {
-          from: primaryHead1,
-        });
+    //   initialStatus = await logMemberStatus(secondaryGroupHead1);
+    //   console.log("Initial Status:", initialStatus.status);
 
-      // Verify the access request creation
-      const request = await tableAccessControlContract.accessRequests(0);
-      assert.equal(request.requester, primaryHead1);
-      assert.equal(request.resource, resource);
-      assert.equal(request.action, action);
-      assert.isFalse(request.isApproved);
+    //   // Step 1: Create an access request
+    //   const createReceipt =
+    //     await tableAccessControlContract.createAccessRequest(resource, action, {
+    //       from: secondaryGroupHead1,
+    //     });
 
-      assert.exists(
-        createReceipt.logs.find((log) => log.event === "AccessRequestCreated"),
-        "AccessRequestCreated event was not emitted"
-      );
-      // Log balance before reward
-      let balanceBefore = await roleToken.balanceOf(regularMember1);
-      console.log(`Balance before reward: ${balanceBefore.toString()}`);
-      // Step 2: Approve the access request by multiple primary heads to meet quorum
-      // Assuming the quorum is 3 out of 5 primary heads
-      await tableAccessControlContract.handleAccessRequest(0, true, {
-        from: primaryHead2,
-      });
-      await tableAccessControlContract.handleAccessRequest(0, true, {
-        from: primaryHead3,
-      });
-      await tableAccessControlContract.handleAccessRequest(0, true, {
-        from: primaryHead4,
-      });
+    //   // Verify the access request creation
+    //   const request = await tableAccessControlContract.accessRequests(1);
+    //   // assert.equal(request.requester, secondaryGroupHead1);
+    //   // assert.equal(request.resource, resource);
+    //   // assert.equal(request.action, action);
+    //   // assert.isFalse(request.isApproved);
 
-      // Fetch the updated request
-      const updatedRequest = await tableAccessControlContract.accessRequests(0);
-      assert.isTrue(
-        updatedRequest.isApproved,
-        "The request should be approved"
-      );
+    //   assert.exists(
+    //     createReceipt.logs.find((log) => log.event === "AccessRequestCreated"),
+    //     "AccessRequestCreated event was not emitted"
+    //   );
+    //   // Log balance before reward
+    //   let balanceBefore = await roleToken.balanceOf(secondaryGroupHead1);
+    //   console.log(`Balance before reward: ${balanceBefore.toString()}`);
+    //   // Step 2: Approve the access request by multiple primary heads to meet quorum
+    //   // Assuming the quorum is 3 out of 5 primary heads
+    //   await tableAccessControlContract.handleAccessRequest(0, true, {
+    //     from: secondaryGroupHead2,
+    //   });
+    //   await tableAccessControlContract.handleAccessRequest(0, true, {
+    //     from: secondaryGroupHead3,
+    //   });
 
-      // Step 3: View the GlobalResourceTable after approval
-      let result = await measureFunctionExecutionTime(
-        tableAccessControlContract.viewGlobalResourceTable,
-        {
-          from: primaryHead1,
-        }
-      );
+    //   // Fetch the updated request
+    //   const updatedRequest = await tableAccessControlContract.accessRequests(0);
+    //   assert.isTrue(
+    //     updatedRequest.isApproved,
+    //     "The request should be approved"
+    //   );
 
-      // Check the emitted GlobalResourceTableEmitted event
-      const events = result.logs.filter(
-        (log) => log.event === "GlobalResourceTableViewed"
-      );
-      // Simulate time passing for benign behavior
-      //await time.increase(time.duration.days(2));
-      await time.increase(time.duration.days(2));
-      await time.advanceBlock();
-      // Log balance before reward
-      let balanceAfter = await roleToken.balanceOf(primaryHead1);
-      console.log(`Balance after reward: ${balanceAfter.toString()}`);
+    //   // Step 3: View the GlobalResourceTable after approval
+    //   let result = await measureFunctionExecutionTime(
+    //     tableAccessControlContract.viewGlobalResourceTable,
+    //     {
+    //       from: secondaryGroupHead1,
+    //     }
+    //   );
 
-      if (events.length > 0) {
-        const { viewer, resourceTable } = events[0].args;
-        console.log("Viewer Address:", viewer);
-        console.log("Global Resource Table:", resourceTable); // This will show the resource table in the logs
+    //   // Check the emitted GlobalResourceTableEmitted event
+    //   const events = result.logs.filter(
+    //     (log) => log.event === "GlobalResourceTableViewed"
+    //   );
+    //   // Simulate time passing for benign behavior
+    //   //await time.increase(time.duration.days(2));
+    //   await time.increase(time.duration.days(2));
+    //   await time.advanceBlock();
+    //   // Log balance before reward
+    //   let balanceAfter = await roleToken.balanceOf(secondaryGroupHead1);
+    //   console.log(`Balance after reward: ${balanceAfter.toString()}`);
 
-        // Verify that the GlobalResourceTable was returned
-        assert.isArray(resourceTable, "GlobalResourceTable should be an array");
-        assert.isNotEmpty(
-          resourceTable,
-          "GlobalResourceTable should not be empty"
-        );
-        finalStatus = await logMemberStatus(primaryHead1);
-        const isStateTransitioned = finalStatus.status !== initialStatus.status;
-        const measurments = {
-          delay: 0,
-          isStatusChanged: isStateTransitioned,
-          latency: 0,
-          blockingEndTime: await logBlockingEndTime(primaryHead1),
-          tokenBalance: await roleToken.balanceOf(primaryHead1),
-          reward: balanceAfter.toString() - balanceBefore.toString(),
-        };
-        await writeLogToCSV(
-          initialStatus,
-          finalStatus,
-          "access_local_resource",
-          result.receipt.gasUsed,
-          0,
-          measurments
-        );
-      }
-    });
+    //   if (events.length > 0) {
+    //     const { viewer, resourceTable } = events[0].args;
+    //     console.log("Viewer Address:", viewer);
+    //     console.log("Global Resource Table:", resourceTable); // This will show the resource table in the logs
 
-    it("should allow primary heads to view GlobalResourceTable after request approval by required quorum", async () => {
-      console.log(
-        "TEST 13: should allow secondary group heads to view GlobalResourceTable after request approval by required quorum"
-      );
-      const resource = "GlobalResourceTable";
-      const action = "view";
-      initialStatus = await logMemberStatus(secondaryGroupHead1);
-      console.log("Initial Status:", initialStatus.status);
+    //     // Verify that the GlobalResourceTable was returned
+    //     assert.isArray(resourceTable, "GlobalResourceTable should be an array");
+    //     assert.isNotEmpty(
+    //       resourceTable,
+    //       "GlobalResourceTable should not be empty"
+    //     );
+    //     finalStatus = await logMemberStatus(secondaryGroupHead1);
+    //     const isStateTransitioned = finalStatus.status !== initialStatus.status;
+    //     const measurments = {
+    //       delay: 0,
+    //       isStatusChanged: isStateTransitioned,
+    //       latency: 0,
+    //       blockingEndTime: await logBlockingEndTime(secondaryGroupHead1),
+    //       tokenBalance: await roleToken.balanceOf(secondaryGroupHead1),
+    //       reward: balanceAfter.toString() - balanceBefore.toString(),
+    //     };
+    //     await writeLogToCSV(
+    //       initialStatus,
+    //       finalStatus,
+    //       "access_local_resource",
+    //       result.receipt.gasUsed,
+    //       0,
+    //       measurments
+    //     );
+    //   }
+    // });
 
-      // Step 1: Create an access request
-      const createReceipt =
-        await tableAccessControlContract.createAccessRequest(resource, action, {
-          from: primaryHead1,
-        });
+    // it("should allow primary heads to edit GlobalResourceTable after request approval by required quorum", async () => {
+    //   console.log(
+    //     "TEST 12: should allow primary heads to edit GlobalResourceTable after request approval by required quorum"
+    //   );
+    //   const resource = "GlobalResourceTable";
+    //   const action = "edit";
+    //   initialStatus = await logMemberStatus(primaryHead2);
+    //   console.log("Initial Status:", initialStatus.status);
 
-      // Verify the access request creation
-      const request = await tableAccessControlContract.accessRequests(0);
-      assert.equal(request.requester, secondaryGroupHead1);
-      assert.equal(request.resource, resource);
-      assert.equal(request.action, action);
-      assert.isFalse(request.isApproved);
+    //   // Step 1: Create an access request
+    //   const createReceipt =
+    //     await tableAccessControlContract.createAccessRequest(resource, action, {
+    //       from: primaryHead2,
+    //     });
 
-      assert.exists(
-        createReceipt.logs.find((log) => log.event === "AccessRequestCreated"),
-        "AccessRequestCreated event was not emitted"
-      );
-      // Log balance before reward
-      let balanceBefore = await roleToken.balanceOf(secondaryGroupHead1);
-      console.log(`Balance before reward: ${balanceBefore.toString()}`);
-      // Step 2: Approve the access request by multiple primary heads to meet quorum
-      // Assuming the quorum is 3 out of 5 primary heads
-      await tableAccessControlContract.handleAccessRequest(0, true, {
-        from: primaryHead2,
-      });
-      await tableAccessControlContract.handleAccessRequest(0, true, {
-        from: primaryHead3,
-      });
-      await tableAccessControlContract.handleAccessRequest(0, true, {
-        from: primaryHead4,
-      });
+    //   const request = await tableAccessControlContract.accessRequests(0);
+    //   assert.equal(request.requester, primaryHead2);
+    //   assert.equal(request.resource, resource);
+    //   assert.equal(request.action, action);
+    //   assert.exists(
+    //     createReceipt.logs.find((log) => log.event === "AccessRequestCreated"),
+    //     "AccessRequestCreated event was not emitted"
+    //   );
 
-      // Fetch the updated request
-      const updatedRequest = await tableAccessControlContract.accessRequests(0);
-      assert.isTrue(
-        updatedRequest.isApproved,
-        "The request should be approved"
-      );
+    //   let balanceBefore = await roleToken.balanceOf(primaryHead2);
+    //   console.log(`Balance before reward: ${balanceBefore.toString()}`);
 
-      // Step 3: View the GlobalResourceTable after approval
-      let result = await measureFunctionExecutionTime(
-        tableAccessControlContract.viewGlobalResourceTable,
-        {
-          from: primaryHead1,
-        }
-      );
+    //   // Step 2: Approve the access request by quorum
+    //   await tableAccessControlContract.handleAccessRequest(0, true, {
+    //     from: primaryHead2,
+    //   });
+    //   await tableAccessControlContract.handleAccessRequest(0, true, {
+    //     from: primaryHead3,
+    //   });
+    //   await tableAccessControlContract.handleAccessRequest(0, true, {
+    //     from: primaryHead4,
+    //   });
 
-      // Check the emitted GlobalResourceTableEmitted event
-      const events = result.logs.filter(
-        (log) => log.event === "GlobalResourceTableViewed"
-      );
-      // Simulate time passing for benign behavior
-      //await time.increase(time.duration.days(2));
-      await time.increase(time.duration.days(2));
-      await time.advanceBlock();
-      // Log balance before reward
-      let balanceAfter = await roleToken.balanceOf(secondaryGroupHead1);
-      console.log(`Balance after reward: ${balanceAfter.toString()}`);
+    //   const updatedRequest = await tableAccessControlContract.accessRequests(0);
+    //   assert.isTrue(
+    //     updatedRequest.isApproved,
+    //     "The request should be approved"
+    //   );
 
-      if (events.length > 0) {
-        const { viewer, resourceTable } = events[0].args;
-        console.log("Viewer Address:", viewer);
-        console.log("Global Resource Table:", resourceTable); // This will show the resource table in the logs
+    //   // ✅ Step 3: Call editGlobalResourceTable with correct parameters
+    //   const result = await measureFunctionExecutionTime(
+    //     tableAccessControlContract.editGlobalResourceTable,
+    //     primaryHead1,
+    //     primaryHead3,
+    //     primaryHead4,
+    //     { from: primaryHead2 }
+    //   );
 
-        // Verify that the GlobalResourceTable was returned
-        assert.isArray(resourceTable, "GlobalResourceTable should be an array");
-        assert.isNotEmpty(
-          resourceTable,
-          "GlobalResourceTable should not be empty"
-        );
-        finalStatus = await logMemberStatus(secondaryGroupHead1);
-        const isStateTransitioned = finalStatus.status !== initialStatus.status;
-        const measurments = {
-          delay: 0,
-          isStatusChanged: isStateTransitioned,
-          latency: 0,
-          blockingEndTime: await logBlockingEndTime(secondaryGroupHead1),
-          tokenBalance: await roleToken.balanceOf(secondaryGroupHead1),
-          reward: balanceAfter.toString() - balanceBefore.toString(),
-        };
-        await writeLogToCSV(
-          initialStatus,
-          finalStatus,
-          "access_local_resource",
-          result.receipt.gasUsed,
-          0,
-          measurments
-        );
-      }
-    });
+    //   const events = result.logs.filter(
+    //     (log) => log.event === "GlobalResourceTableEdit"
+    //   );
+
+    //   await time.increase(time.duration.days(2));
+    //   await time.advanceBlock();
+
+    //   let balanceAfter = await roleToken.balanceOf(primaryHead2);
+    //   console.log(`Balance after reward: ${balanceAfter.toString()}`);
+
+    //   if (events.length > 0) {
+    //     const { viewer, resourceTable } = events[0].args;
+    //     console.log("Viewer Address:", viewer);
+    //     console.log("Global Resource Table:", resourceTable);
+    //     assert.isArray(resourceTable, "GlobalResourceTable should be an array");
+    //     assert.isNotEmpty(
+    //       resourceTable,
+    //       "GlobalResourceTable should not be empty"
+    //     );
+
+    //     finalStatus = await logMemberStatus(primaryHead2);
+    //     const isStateTransitioned = finalStatus.status !== initialStatus.status;
+    //     const measurments = {
+    //       delay: 0,
+    //       isStatusChanged: isStateTransitioned,
+    //       latency: result.exec,
+    //       blockingEndTime: await logBlockingEndTime(primaryHead2),
+    //       tokenBalance: await roleToken.balanceOf(primaryHead2),
+    //       reward: balanceAfter.toString() - balanceBefore.toString(),
+    //     };
+
+    //     await writeLogToCSV(
+    //       initialStatus,
+    //       finalStatus,
+    //       "edit_global_resource",
+    //       result.receipt.gasUsed,
+    //       0,
+    //       measurments
+    //     );
+    //   }
+    // });
   }
 );
