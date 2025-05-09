@@ -342,9 +342,9 @@ contract(
     });
 
     
-    
-    it("should allow SGH to edit GlobalResourceTable after approval and reward benign behavior", async () => {
-      console.log("TEST: SGH tries to edit GlobalResourceTable with approved request and gets rewarded");
+    // Test case for SGH edit GlobalResourceTable - Good Behavior
+    it("should allow secondary head group to edit GlobalResourceTable after approval and reward benign behavior", async () => {
+      console.log("TEST: Secondary head group tries to edit GlobalResourceTable with approved request and gets rewarded");
       const resource = "GlobalResourceTable";
       const action = "edit";
       const initialStatus = await logMemberStatus(secondaryGroupHead1);
@@ -427,9 +427,10 @@ contract(
         measurements
       );
     });
-    it("should allow PGH to delete GlobalResourceTable after approval and reward benign behavior", async () => {
+    // Test case for PGH delete GlobalResourceTable - Good Behavior
+    it("should allow primary head group to delete GlobalResourceTable after approval and reward benign behavior", async () => {
       console.log(
-        "TEST: PGH tries to delete GlobalResourceTable with approved request and gets rewarded"
+        "TEST: Primary head group tries to delete GlobalResourceTable with approved request and gets rewarded"
       );
       const resource = "GlobalResourceTable";
       const action = "delete";
@@ -514,8 +515,9 @@ contract(
         measurements
       );
     });
+    // Test case for SGH delete GlobalResourceTable - Good Behavior
     it("should allow secondary head group to delete GlobalResourceTable after request approval and reward behavior", async () => {
-      console.log("TEST: secondary head group deletes GlobalResourceTable with approved request and gets rewarded");
+      console.log("TEST: Secondary head group deletes GlobalResourceTable with approved request and gets rewarded");
       const resource = "GlobalResourceTable";
       const action = "delete";
       const initialStatus = await logMemberStatus(secondaryGroupHead1);
@@ -599,8 +601,9 @@ contract(
         measurements
       );
     });
-    it("should penalize RM for attempting to view GlobalResourceTable and set status to MALICIOUS", async () => {
-      console.log("TEST: RM tries to view GlobalResourceTable and gets penalized");
+    // Test case for RM Attempting to view GlobalResourceTable - Malicious Behavior
+    it("should penalize regular member for attempting to view GlobalResourceTable and set status to MALICIOUS", async () => {
+      console.log("TEST: Regular member tries to view GlobalResourceTable and gets penalized");
       const resource = "GlobalResourceTable";
       const action = "view";
       const initialStatus = await logMemberStatus(regularMember1);
@@ -649,7 +652,8 @@ contract(
         isStatusChanged: finalStatus.status !== initialStatus.status,
         latency: createReceipt.exec,
         blockingEndTime: blockingEndTimeStr,
-        tokenBalance: balanceAfter.toString()
+        tokenBalance: balanceAfter.toString(),
+        reward: 0
       };
   
       await writeLogToCSV(
