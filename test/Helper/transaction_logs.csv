@@ -1,0 +1,3 @@
+Timestamp,Member Address,Name,Type,Role,Initial Status,Initial Last Status Update,Action,Final Status,Final Last Status Update,Gas Used,Penalty,Delay,Is Status Changed,Latency,Blocking End Time,Reward,Token Balance
+2025-05-01T16:00:25.369Z,0xe93A2d7B930442079f4BB350d16d51C7D1Df67ce,secondary_group_head1,type1,SECONDARY_GROUP_HEAD,BENIGN,"5/1/2025, 11:00:24 AM",too_frequent_access,SUSPICIOUS,"5/1/2025, 11:00:25 AM",347524,3000,8.5,true,52.85,"5/1/2025, 11:30:25 AM",,499999999999999999997000
+2025-05-01T16:01:49.967Z,0xe93A2d7B930442079f4BB350d16d51C7D1Df67ce,secondary_group_head1,type1,SECONDARY_GROUP_HEAD,BENIGN,"5/1/2025, 11:01:49 AM",dos_attack,MALICIOUS,"5/1/2025, 11:01:49 AM",225047,22000,-15.14,true,46.25,"5/3/2025, 11:01:49 AM",,499999999999999999978000
