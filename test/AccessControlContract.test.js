@@ -159,6 +159,7 @@ contract(
       const result = await accessControlContract1.getTime({
         from: member,
       });
+      const totalPenalty = await judgeContract.getTotalPenalties(member);
 
       const blockingEndTimeVal = result[0];
       const boolval = result[1];
@@ -166,7 +167,7 @@ contract(
       if (boolval) {
         const blockingEndTime = new Date(blockingEndTimeVal * 1000);
         console.log(
-          `Blocking End Time for ${member}: ${blockingEndTime.toLocaleString()}`
+          `Blocking End Time for ${member}: ${blockingEndTime.toLocaleString()}``Total Penalty ${member}: ${totalPenalty}`
         );
       }
     }

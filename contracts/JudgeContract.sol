@@ -12,6 +12,7 @@ contract JudgeContract is Ownable {
         string[] reasons;
         uint256 lastPenaltyTime;
         uint256 blockingEndTime;
+        uint256 totalPenaltyAmount;  
     }
 
     struct Penalty {
@@ -145,6 +146,8 @@ contract JudgeContract is Ownable {
         if (penaltyAmount > 0) {
             roleBasedAccessContract.penalizeMember(_memberAddress, penaltyAmount);
         }
+        misbehaviorHistory[_memberAddress].totalPenaltyAmount += penaltyAmount; 
+
         emit Penalized(_memberAddress, penaltyAmount, reason);
     }
 
@@ -178,4 +181,8 @@ contract JudgeContract is Ownable {
         MisbehaviorRecord storage record = misbehaviorHistory[_memberAddress];
         return record.blockingEndTime;
     }
+
+    function getTotalPenalties(address _memberAddress) external view returns (uint256) { 
+        return misbehaviorHistory[_memberAddress].totalPenaltyAmount; 
+    } 
 }
