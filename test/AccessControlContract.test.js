@@ -32,7 +32,7 @@ contract(
       accessControlFactory;
     let accessControlContract1, accessControlContract2;
 
-    beforeEach(async () => {
+    before(async () => {
       // Deploy contracts
       roleToken = await RoleToken.new(admin);
       await roleToken.assignAdminRole(admin, roleToken.address);
@@ -159,7 +159,6 @@ contract(
       const result = await accessControlContract1.getTime({
         from: member,
       });
-      const totalPenalty = await judgeContract.getTotalPenalties(member);
 
       const blockingEndTimeVal = result[0];
       const boolval = result[1];
@@ -167,9 +166,13 @@ contract(
       if (boolval) {
         const blockingEndTime = new Date(blockingEndTimeVal * 1000);
         console.log(
-          `Blocking End Time for ${member}: ${blockingEndTime.toLocaleString()}``Total Penalty ${member}: ${totalPenalty}`
+          `Blocking End Time for ${member}: ${blockingEndTime.toLocaleString()}`
         );
       }
+      const totalAfter = await judgeContract.getTotalPenalties(
+        secondaryGroupHead1
+      );
+      console.log(`Total penalty AFTER trigger: ${totalAfter}`);
     }
 
     async function measureFunctionExecutionTime(fn, ...args) {
@@ -219,6 +222,10 @@ contract(
       console.log(
         "TEST 2: should penalize for too frequent access and track misbehavior"
       );
+      const totalBefore = await judgeContract.getTotalPenalties(
+        secondaryGroupHead1
+      );
+      console.log(`Total penalty BEFORE trigger: ${totalBefore}`);
       console.log("Initial Status:");
       await logMemberStatus(primaryHead1);
       await logMemberStatus(secondaryGroupHead1);
@@ -299,7 +306,8 @@ contract(
       console.log("Initial Status:");
       await logMemberStatus(primaryHead1);
       await logMemberStatus(secondaryGroupHead1);
-
+      await time.increase(time.duration.days(2));
+      await time.advanceBlock();
       // Add a policy for testing
       await accessControlContract1.policyAdd(
         3,

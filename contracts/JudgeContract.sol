@@ -12,7 +12,8 @@ contract JudgeContract is Ownable {
         string[] reasons;
         uint256 lastPenaltyTime;
         uint256 blockingEndTime;
-        uint256 totalPenaltyAmount;  
+        uint256 totalPenaltyAmount;
+        uint256 totakRewardAmount;  
     }
 
     struct Penalty {
@@ -153,6 +154,7 @@ contract JudgeContract is Ownable {
 
     function rewardMember(address _memberAddress) internal {
         roleBasedAccessContract.rewardMember(_memberAddress, 5000); // Reward 5000 tokens for staying benign if it was in benign status before
+        misbehaviorHistory[_memberAddress].totakRewardAmount += 5000;
         emit RewardIssued(_memberAddress, 5000);
     }
 
@@ -185,4 +187,8 @@ contract JudgeContract is Ownable {
     function getTotalPenalties(address _memberAddress) external view returns (uint256) { 
         return misbehaviorHistory[_memberAddress].totalPenaltyAmount; 
     } 
+
+    function getTotalRewards(address _memberAddress) external view returns (uint256) { 
+        return misbehaviorHistory[_memberAddress].totakRewardAmount; 
+    }
 }

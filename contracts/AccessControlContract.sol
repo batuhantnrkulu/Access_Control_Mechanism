@@ -15,7 +15,7 @@ contract AccessControlContract {
 
     event PolicyAdded(
         uint256 indexed policyId,
-        //RoleToken.Role role,
+        RoleToken.Role role,
         string resource,
         string action,
         string permission
@@ -126,7 +126,7 @@ contract AccessControlContract {
     }
 
     function policyAdd(
-        //RoleToken.Role role,
+        RoleToken.Role role,
         string memory resource,
         string memory action,
         string memory permission
@@ -135,7 +135,7 @@ contract AccessControlContract {
         resource, action, permission, 0));
         emit PolicyAdded(
             policies.length - 1,
-            //role,
+            role,
             resource,
             action,
             permission

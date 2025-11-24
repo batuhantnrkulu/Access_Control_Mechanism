@@ -1,0 +1,67 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./RegisterContract.sol";
+import "./RoleBasedAccessControl.sol";
+import "./JudgeContract.sol";
+import "./RegisterContract.sol";    
+import "./AccessControlContract.sol";
+import "./RoleToken.sol";
+
+contract GovernanceTokenContract is Ownable {
+    RoleBasedAccessControl public roleBasedAccessContract;  // Role-based access control contract
+    JudgeContract public judgeContract;
+    RoleToken public roleToken;
+    address public admin;
+
+    constructor(address initialAdmin, address _judgeContract,address _roleBasedAccessContract, address _roleToken) Ownable(initialAdmin) {
+        admin = initialAdmin;
+        roleBasedAccessContract = RoleBasedAccessControl(_roleBasedAccessContract);
+        judgeContract = JudgeContract(_judgeContract);
+        roleToken = RoleToken(_roleToken);
+    }
+
+    modifier onlyAdmin() {
+        require(roleBasedAccessContract.getRole(msg.sender) == RoleToken.Role.ADMIN, "Access denied: Not an Admin");
+        _;
+    }
+    // Calculate compliance for a peer
+    function getCompliance(address peer) public view returns (uint256) {
+        uint256 rewards = judgeContract.getTotalRewards(peer);
+        uint256 penalties = judgeContract.getTotalPenalties(peer);
+        
+
+        if (rewards + penalties == 0) {
+            return 0; // Avoid division by zero
+        }
+        uint256 denominator = rewards + penalties;
+        return rewards / denominator; // scaled by 1e18 for precision
+    }
+
+    // Get status multiplier s_i
+    function getStatusMultiplier() public view returns (uint256) {
+        RoleToken.Member memory member = roleBasedAccessContract.getMemberByAddress(msg.sender);
+
+        if (keccak256(bytes(member.status)) == keccak256(bytes("BENIGN"))) {
+            return 2;
+        } else if (keccak256(bytes(member.status)) == keccak256(bytes("SUSPICIOUS"))) {
+            return 1;
+        } else if (keccak256(bytes(member.status)) == keccak256(bytes("MALICIOUS"))) {
+            return 0;
+        }
+        return 0;
+    }
+
+    // Governance power formula
+    function getGovernancePower() external view returns (uint256) {
+        uint256 tokenBalance = roleToken.balanceOf(msg.sender);
+        uint256 compliance = getCompliance(msg.sender); // scaled 1e18
+        uint256 multiplier = getStatusMultiplier();
+
+        // C_total(t) = [Token Balance × (Compliance × 100)] × s_i
+        uint256 compliancePercent = (compliance * 100) ;
+
+        return (tokenBalance * compliance * multiplier);
+    }
+}

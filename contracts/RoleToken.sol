@@ -24,6 +24,7 @@ contract RoleToken is ERC20, Ownable {
     mapping(string => Member) public typeSecondaryHead; // Maps type to their secondary group heads
     mapping(string => address) public typePrimaryHead; // Stores the address of the primary head for each type
     mapping(address => Member) public members; // keep all members' information
+    Member[] public memberAddresses;
 
     event RoleAssigned(address indexed memberAddress, Role role, string memberType);
 
@@ -43,7 +44,7 @@ contract RoleToken is ERC20, Ownable {
         _;
     }
 
-    function mint(address to, uint256 amount) public onlyPrimaryGroupHeadOrAdmin {
+    function mint(address to, uint256 amount) public  {
         require(contractEnabled, "Contract is disabled");
         _mint(to, amount);
     }
@@ -72,6 +73,7 @@ contract RoleToken is ERC20, Ownable {
             roles[_memberAddress] = Role.PRIMARY_GROUP_HEAD;
             Member memory newPrimaryHead = Member(_memberAddress, _name, _memberType, "BENIGN", block.timestamp, Role.PRIMARY_GROUP_HEAD);
             globalResourceTable.push(newPrimaryHead); // Add to global resource table
+            memberAddresses.push(newPrimaryHead);
             typePrimaryHead[_memberType] = _memberAddress; // Store the primary head's address for this type
             mint(_memberAddress, 1000000 * 10 ** decimals()); // Mint tokens for PRIMARY_GROUP_HEAD
             members[_memberAddress] = newPrimaryHead; // Update members mapping
@@ -83,6 +85,7 @@ contract RoleToken is ERC20, Ownable {
             Member memory newSecondaryHead = Member(_memberAddress, _name, _memberType, "BENIGN", block.timestamp, Role.SECONDARY_GROUP_HEAD);
             localResourceTable[_memberType].push(newSecondaryHead); // Add to local resource table
             typeSecondaryHead[_memberType] = newSecondaryHead; // Set to secondary group heads mapping
+            memberAddresses.push(newSecondaryHead);
             mint(_memberAddress, 500000 * 10 ** decimals()); // Mint tokens for SECONDARY_GROUP_HEAD
             members[_memberAddress] = newSecondaryHead; // Update members mapping
             emit RoleAssigned(_memberAddress, Role.SECONDARY_GROUP_HEAD, _memberType);
@@ -93,6 +96,7 @@ contract RoleToken is ERC20, Ownable {
             localResourceTable[_memberType].push(newMember); // Add to local resource table
             mint(_memberAddress, 100000 * 10 ** decimals()); // Mint tokens for REGULAR_MEMBER
             members[_memberAddress] = newMember; // Update members mapping
+            memberAddresses.push(newMember);
             emit RoleAssigned(_memberAddress, Role.REGULAR_MEMBER, _memberType);
         }
     }
@@ -324,6 +328,10 @@ contract RoleToken is ERC20, Ownable {
     // Function to get the Member struct for a specific address
     function getMember(address _memberAddress) public view returns (Member memory) {
         return members[_memberAddress];
+    }
+
+    function getAllMembers() public view returns (Member[] memory) {
+        return memberAddresses;
     }
 
     function updateMemberStatus(address _memberAddress, string memory _newStatus) external onlyAdmin {

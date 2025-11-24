@@ -20,5 +20,8 @@
     "truffle": "^5.11.5",
     "web3": "^4.12.1"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "mocha": "^11.7.1"
+  }
 }

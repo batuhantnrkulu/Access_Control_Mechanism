@@ -56,6 +56,9 @@ contract RoleBasedAccessControl {
     function getMember(address account) public view onlyMembers returns (RoleToken.Member memory) {
         return roleTokenContract.getMember(account);
     }
+    function getMemberByAddress(address account) public view returns (RoleToken.Member memory) {
+        return roleTokenContract.getMember(account);
+    }
 
     // Function to check if two accounts have the same member type or are both Primary Group Heads (PGHs)
     function areSameOrGlobalMembers(address account1, address account2) public view onlyMembers returns (bool) {
