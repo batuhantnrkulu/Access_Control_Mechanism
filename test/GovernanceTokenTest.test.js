@@ -196,88 +196,7 @@ contract(
       console.log(`Execution Time: ${(end - start).toFixed(2)} ms`);
       return tx;
     }
-    // it("should penalize for too frequent access and track misbehavior", async () => {
-    //   console.log(
-    //     "TEST 2: should penalize for too frequent access and track misbehavior"
-    //   );
-    //   const totalBefore = await judgeContract.getTotalPenalties(
-    //     secondaryGroupHead1
-    //   );
-    //   console.log(`Total penalty BEFORE trigger: ${totalBefore}`);
-    //   console.log("Initial Status:");
-    //   await logMemberStatus(primaryHead1);
-    //   await logMemberStatus(secondaryGroupHead1);
 
-    //   let tx;
-    //   // Add a policy for testing
-    //   tx = await measureFunctionExecutionTime(
-    //     accessControlContract1.policyAdd,
-    //     3,
-    //     "test.jpg",
-    //     "view",
-    //     "allow",
-    //     { from: primaryHead1 }
-    //   );
-
-    //   console.log("Gas Used for policyAdd:", tx.receipt.gasUsed);
-
-    //   // First valid access
-    //   tx = await measureFunctionExecutionTime(
-    //     accessControlContract1.accessControl,
-    //     "test.jpg",
-    //     "view",
-    //     {
-    //       from: secondaryGroupHead1,
-    //     }
-    //   );
-
-    //   console.log("Gas Used for first accessControl:", tx.receipt.gasUsed);
-
-    //   // Trigger too frequent access
-    //   tx = await measureFunctionExecutionTime(
-    //     accessControlContract1.accessControl,
-    //     "test.jpg",
-    //     "view",
-    //     {
-    //       from: secondaryGroupHead1,
-    //     }
-    //   );
-
-    //   console.log(
-    //     "Gas Used for too frequent accessControl:",
-    //     tx.receipt.gasUsed
-    //   );
-
-    //   // Check for the MisbehaviorReported event (this event is triggered by too frequent access)
-    //   const misbehaviorReportedEvent = tx.logs.find(
-    //     (log) => log.event === "MaliciousActivityReported"
-    //   );
-
-    //   assert.isDefined(
-    //     misbehaviorReportedEvent,
-    //     "MaliciousActivityReported event should be emitted"
-    //   );
-    //   assert.equal(
-    //     misbehaviorReportedEvent.args.reason,
-    //     "Too frequent access",
-    //     "Reason should be 'Too frequent access'"
-    //   );
-
-    //   // Ensure the penalty is applied correctly
-    //   const penaltyAmount =
-    //     misbehaviorReportedEvent.args.penaltyAmount.toString();
-    //   console.log(`Penalty Amount: ${penaltyAmount}`);
-    //   assert.isAbove(
-    //     parseInt(penaltyAmount),
-    //     0,
-    //     "Penalty amount should be greater than 0"
-    //   );
-
-    //   // Log final member status and blocking end time
-    //   console.log("Final Status:");
-    //   await logMemberStatus(secondaryGroupHead1);
-    //   await logBlockingEndTime(secondaryGroupHead1); // Log blocking end time
-    // });
     it("should update governance power after benign and malicious behaviors", async () => {
       console.log("Initial Status:");
       await logMemberStatus(primaryHead1);
@@ -287,17 +206,11 @@ contract(
       await accessControlContract1.policyAdd(3, "test.jpg", "view", "allow", {
         from: primaryHead1,
       });
-      // await accessControlContract2.policyAdd(3, "test.jpg", "view", "allow", {
-      //   from: primaryHead2,
-      // });
 
       // Access the resource benignly
       await accessControlContract1.accessControl("test.jpg", "view", {
         from: secondaryGroupHead1,
       });
-      // await accessControlContract2.accessControl("test.jpg", "view", {
-      //   from: secondaryGroupHead2,
-      // });
 
       // Log balance before reward
       let balanceBefore = await roleToken.balanceOf(secondaryGroupHead1);
@@ -311,9 +224,6 @@ contract(
       await accessControlContract1.accessControl("test.jpg", "view", {
         from: secondaryGroupHead1,
       });
-      // await accessControlContract2.accessControl("test.jpg", "view", {
-      //   from: secondaryGroupHead2,
-      // });
 
       // Log balance after reward
       let balanceAfter = await roleToken.balanceOf(secondaryGroupHead1);
@@ -422,6 +332,150 @@ contract(
       assert(
         benignPower.gt(maliciousPower),
         "Benign peer should have higher governance power than malicious peer"
+      );
+    });
+    it("should measure gas for each internal component", async () => {
+      const peer = accounts[1];
+
+      const gasCompliance =
+        await governanceTokenContract.measureComplianceGas.call(peer);
+      console.log("Gas – Compliance Calculation:", gasCompliance.toString());
+
+      const gasStatus =
+        await governanceTokenContract.measureStatusMultiplierGas.call(peer);
+      console.log("Gas – Status Multiplier:", gasStatus.toString());
+
+      const gasGovPower =
+        await governanceTokenContract.measureGovernancePowerGas.call(peer);
+      console.log(
+        "Gas – Governance Power Calculation:",
+        gasGovPower.toString()
+      );
+
+      const gasMint = await governanceTokenContract.measureMintGas.call(
+        peer,
+        web3.utils.toWei("1")
+      );
+      console.log("Gas – Minting:", gasMint.toString());
+
+      const gasDistribution =
+        await governanceTokenContract.measureDistributionGas.call();
+      console.log("Gas – Full Distribution:", gasDistribution.toString());
+    });
+    it("should update governance power after malicious behaviors", async () => {
+      console.log("\n=== MALICIOUS BEHAVIOR TEST ===");
+
+      // Initial statuses
+      console.log("Initial Status:");
+      await logMemberStatus(primaryHead1);
+      await logMemberStatus(secondaryGroupHead2);
+
+      // Add policy first
+      await accessControlContract1.policyAdd(
+        3,
+        "attack.jpg",
+        "view",
+        "disallow",
+        {
+          from: primaryHead1,
+        }
+      );
+
+      // 1️⃣ Attempt malicious access (disallowed policy → triggers MaliciousActivityReported)
+      const maliciousTx = await accessControlContract1.accessControl(
+        "attack.jpg",
+        "view",
+        { from: secondaryGroupHead1 }
+      );
+
+      console.log("Malicious access gas used:", maliciousTx.receipt.gasUsed);
+
+      // Verify event
+      const event = maliciousTx.logs.find(
+        (l) => l.event === "MaliciousActivityReported"
+      );
+      assert.isDefined(event, "Malicious activity should be reported");
+
+      console.log(
+        `Malicious Event → Reason: ${
+          event.args.reason
+        }, Penalty: ${event.args.penaltyAmount.toString()}`
+      );
+
+      // 2️⃣ Log updated status after malicious activity
+      console.log("\nStatus AFTER malicious behavior:");
+      await logMemberStatus(secondaryGroupHead1);
+
+      // 3️⃣ Distribute governance tokens
+      const tx = await governanceTokenContract.distributeGovernanceTokens({
+        from: primaryHead2,
+      });
+      console.log("Governance token distribution gas:", tx.receipt.gasUsed);
+
+      // 4️⃣ Compute governance power
+      async function logGovPower(peer) {
+        const power = await governanceTokenContract.getGovernancePower(peer);
+        console.log(`Governance Power for ${peer}: ${power.toString()}`);
+        return power;
+      }
+
+      const benignPower = await logGovPower(secondaryGroupHead1); // from earlier tests
+      const maliciousPower = await logGovPower(secondaryGroupHead2);
+
+      console.log(
+        `Governance Comparison → Benign: ${benignPower}, Malicious: ${maliciousPower}`
+      );
+
+      // 5️⃣ Print distributions
+      const members = await roleToken.getAllMembers();
+
+      console.log(
+        "\n--- Governance distributions after malicious behavior ---"
+      );
+      for (let m of members) {
+        const bal = await govToken.balanceOf(m.memberAddress);
+        console.log(
+          `${m.name} => ${web3.utils.fromWei(bal.toString(), "ether")} GOV`
+        );
+      }
+    });
+    it("Execution time for governance mechanism functions", async () => {
+      console.log("\n--- EXECUTION TIME MEASUREMENT ---");
+      benignPeer = secondaryGroupHead1;
+
+      // 1. Compliance Calc
+      await measureFunctionExecutionTime(
+        governanceTokenContract.measureComplianceGas,
+        benignPeer,
+        { from: admin }
+      );
+
+      // 2. Status Multiplier
+      await measureFunctionExecutionTime(
+        governanceTokenContract.measureStatusMultiplierGas,
+        benignPeer,
+        { from: admin }
+      );
+
+      // 3. Governance Power
+      await measureFunctionExecutionTime(
+        governanceTokenContract.measureGovernancePowerGas,
+        benignPeer,
+        { from: admin }
+      );
+
+      // 4. Minting Cost
+      await measureFunctionExecutionTime(
+        governanceTokenContract.measureMintGas,
+        benignPeer,
+        web3.utils.toWei("1", "ether"),
+        { from: admin }
+      );
+
+      // 5. Full Distribution
+      await measureFunctionExecutionTime(
+        governanceTokenContract.distributeGovernanceTokens,
+        { from: admin }
       );
     });
   }

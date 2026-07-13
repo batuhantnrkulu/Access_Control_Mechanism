@@ -1,0 +1,10 @@
+{
+  "RoleToken": "0xDd186aB647fB971990f5aD5613B1873E6C367ea9",
+  "RoleBasedAccessControl": "0x1a33e6a0788D844e1Dd0e2B5d7BE01e7B9ae0053",
+  "RegisterContract": "0x0698f2fAEd69C0b59f35f4Fb5a903752c13c0e8A",
+  "JudgeContract": "0x0b7774C4A55A62d072e80a278dbC7e2AfC08735D",
+  "AccessControlFactory": "0xE03e2301eA63955A9961fB2DaF4a451847e2b1eA",
+  "TableAccessControlContract": "0x2b01C8d83DcB861D165562dfdf74672c2Abe4891",
+  "GovernanceERC20": "0x388286Fc61A2DBe40F7234347Bb0607eaFfF9E2E",
+  "GovernanceTokenContract": "0x2208d0e5d1cD7d18508AE2543a564991F1CeFf98"
+}
